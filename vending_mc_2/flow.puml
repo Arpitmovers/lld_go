@@ -1,0 +1,84 @@
+@startuml
+namespace inventory {
+    class Inventory << (S,Aquamarine) >> {
+        - items <font color=blue>map</font>[string]*model.Item
+
+        + AddItem(item model.Item) 
+        + GetItem(code string) (*model.Item, error)
+        + DeductItem(code string) error
+
+    }
+}
+
+
+namespace machine {
+    class DispenseItemState << (S,Aquamarine) >> {
+        + VM *VendingMachine
+
+        + InsertMoney(m int) error
+        + SelectItem(code string) error
+        + DispenseItem() error
+        + Cancel() error
+
+    }
+    class HasMoneyState << (S,Aquamarine) >> {
+        + VM *VendingMachine
+
+        + InsertMoney(amount int) error
+        + SelectItem(code string) error
+        + DispenseItem() error
+        + Cancel() error
+
+    }
+    class IdleState << (S,Aquamarine) >> {
+        + VM *VendingMachine
+
+        + InsertMoney(amount int) error
+        + DispenseItem() error
+        + SelectItem( string) error
+        + Cancel() error
+
+    }
+    class VendingMachine << (S,Aquamarine) >> {
+        + Inventory *inventory.Inventory
+        + CurrentState state.State
+        + SelectedItem *model.Item
+        + Balance int
+
+        + SetState(s state.State) 
+        + InsertMoney(amount int) error
+        + SelectItem(code string) error
+        + DispenseItem() error
+        + Cancel() error
+
+    }
+}
+
+"state.State" <|-- "machine.DispenseItemState"
+"state.State" <|-- "machine.HasMoneyState"
+"state.State" <|-- "machine.IdleState"
+"state.State" <|-- "machine.VendingMachine"
+
+namespace model {
+    class Item << (S,Aquamarine) >> {
+        + Code string
+        + Name string
+        + Price int
+        + Quantity int
+
+    }
+}
+
+
+namespace state {
+    interface State  {
+        + InsertMoney( int) error
+        + SelectItem( string) error
+        + DispenseItem() error
+        + Cancel() error
+
+    }
+}
+
+
+@enduml
