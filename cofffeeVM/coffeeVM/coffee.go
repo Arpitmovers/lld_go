@@ -1,4 +1,4 @@
-package cofffeevm
+package Cofffeevm
 
 type Coffee struct {
 	Name    string
